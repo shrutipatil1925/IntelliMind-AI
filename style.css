@@ -1,0 +1,185 @@
+/* -----Main App--------- */
+.main{
+    background-color: #0E1117 ;
+}
+
+/* -------sidebar--------- */
+section[data-testid="stSidebar"] {
+    background-color: #1A1F2E ;
+    color : white;
+}
+
+/* -------Buttons------ */
+.stButton > button {
+    border-radius:12px;
+    font-weight: Bold;
+    transition: all 0.25s ease;
+    background:#232734;
+    color:white;
+    border:1px solid #353B4C;
+}
+
+.stButton > button:hover{
+    transform: translate(3px);
+    border: 1px solid #4F8BF9;
+    background:#2F374A;
+}
+
+/* ------------Chat Input---------- */
+.stChatInputContainer{
+    border-radius: 12px;
+}
+
+h1{
+    color: white;
+    font-weight: 700;
+}
+
+p{
+    font-size: 14px;
+}
+
+.stInfo{
+    background:#1C324D;
+}
+
+/* -----chat Messages------ */
+
+.stChatMessage {
+    border-radius:18px;
+    padding:18px;
+    margin:12px 0;
+}
+
+.stChatMessage[data-testid="stChatMessage-user"]{
+    background:#2A3145;
+}
+
+.stChatMessage[data-testid="stChatMessage-assistant"]{
+    background:#1F2433;
+}
+
+/* emoji size */
+[data-testid="stChatMessageAvatar"] img,
+[data-testid="stChatMessageAvatar"] span {
+    font-size: 26px !important;
+}
+
+.stChatMessage p{
+    font-size: 16px;
+    line-height: 1.8;
+}
+
+pre {
+    border-radius: 12px;
+}
+
+code{
+    border-radius: 8px;
+}
+
+/* Chat Input */
+
+/* Outer container */
+[data-testid="stChatInput"] {
+    max-width: 900px !important;
+    margin: 0 auto !important;
+    border: none !important;
+    background: transparent !important;
+    padding: 0 !important;
+    box-shadow: none !important;
+}
+/* Actual input box */
+[data-testid="stChatInput"] > div {
+    background:#232734 !important;
+    border:1px solid #353B4C !important;
+    border-radius:18px !important;
+    min-height:48px !important;
+    max-height:90px !important;
+    padding:8px 14px !important;
+    box-shadow:none !important;
+}
+
+/* Remove Streamlit/BaseWeb borders */
+[data-testid="stChatInput"] [data-baseweb="textarea"]{
+    background:transparent !important;
+    border:none !important;
+    box-shadow:none !important;
+    outline:none !important;
+}
+
+/* textarea */
+[data-testid="stChatInput"] textarea{
+    background:transparent !important;
+    color:white !important;
+    font-size:15px !important;
+}
+
+/* Placeholder */
+[data-testid="stChatInput"] textarea::placeholder{
+    color: #B0B3C0 !important;
+}
+
+/* EVERY focus state */
+[data-testid="stChatInput"] *,
+[data-testid="stChatInput"] *:focus,
+[data-testid="stChatInput"] *:focus-visible,
+[data-testid="stChatInput"] *:active{
+    outline:none !important;
+    box-shadow:none !important;
+}
+
+/* Send button */
+[data-testid="stChatInput"] button{
+    background-color: #4F8BF9;
+    width: 38px !important;
+    height: 38px !important;
+    border-radius: 50% !important;
+    font-size: bold;
+    color : white;
+}
+
+/* upload box */
+[data-testid="stFileUploader"] {
+    background: #0F172A;
+    border: 2px dashed grey;
+    border-radius: 20px;
+    padding: 25px;
+    transition: .3s;
+}
+
+[data-testid="stFileUploader"]:hover {
+    border-color: grey;
+    transform: scale(1.01);
+}
+
+/* browse button */
+[data-testid="stFileUploader"] button {
+    background: #4F8BF9;
+    color: white;
+    border-radius: 12px;
+    font-weight: bold;
+}
+
+[data-testid="stFileUploader"] button:hover {
+    background:#696D72;
+}
+
+/* uploaded file card */
+[data-testid="stFileUploaderFile"] {
+    background: #B4CCDE;
+    border-radius: 15px;
+    padding: 12px;
+}
+
+/* Remove button */
+[data-testid="stFileUploaderDeleteBtn"] {
+    color: red;
+}
+
+.feature{
+    background:#1E293B;
+    border-radius:18px;
+    padding:18px;
+    margin-bottom:15px;
+}
