@@ -1,250 +1,417 @@
-# ResearchRAG 🔬📄
+# IntelliMind AI 🤖🧠
 
-> A Retrieval-Augmented Generation (RAG) system for interacting with research papers using semantic search, vector retrieval, and Gemini-powered question answering.
+> A multi-tool AI assistant that combines conversational AI, document retrieval, web search, calculations, and real-time information through tool calling.
 
-ResearchRAG allows users to upload and work with research papers in PDF format, retrieve the most relevant sections based on a question, and generate context-grounded answers using a Large Language Model.
+**IntelliMind AI** is an AI-powered assistant designed to go beyond simple chatbot conversations. It can understand user queries, decide when external tools are required, retrieve information from uploaded documents, perform calculations, search the web, and fetch current stock prices.
 
-The project combines **PDF processing, text chunking, Hugging Face embeddings, FAISS vector search, LangChain, and Gemini** into a practical research assistant.
+The project demonstrates how **LLMs, RAG, tool calling, and stateful conversations** can be combined to build a practical AI assistant.
 
 ---
 
 ## 🚀 Features
 
-- 📄 **PDF Research Paper Processing**
-  - Extract text from research papers using PyMuPDF.
-  - Process papers into smaller chunks for efficient retrieval.
+### 💬 Conversational AI
 
-- ✂️ **Text Chunking**
-  - Splits large documents into manageable chunks.
-  - Improves semantic retrieval and reduces unnecessary context.
+IntelliMind AI supports natural-language conversations with an LLM.
 
-- 🧠 **Semantic Embeddings**
-  - Converts document chunks into numerical vector representations.
-  - Uses Hugging Face sentence-transformer embeddings.
+Users can ask general questions and continue the conversation using contextual chat history.
 
-- 🔎 **FAISS Vector Search**
-  - Stores document embeddings in a FAISS index.
-  - Retrieves semantically relevant chunks for a user query.
+---
 
-- 🤖 **Gemini-Powered Question Answering**
-  - Uses Google's Gemini model to generate answers from retrieved context.
-  - Answers are generated using information retrieved from the uploaded research papers.
+### 📚 Document Question Answering
 
-- 📚 **Research Paper Q&A**
-  - Ask natural-language questions about research papers.
-  - Retrieve relevant information without manually searching through the entire document.
+Upload documents and ask questions about their content.
 
-- 🖼️ **PDF Image Extraction**
-  - Extract images from research papers for multimodal processing.
-  - Supports research documents containing figures and visual information.
+The system uses a **Retrieval-Augmented Generation (RAG)** approach:
 
-- 💬 **Chat History**
-  - Maintains conversation history during interactions.
-  - Allows follow-up questions within the research conversation.
+```text
+Document
+   ↓
+Text Extraction
+   ↓
+Chunking
+   ↓
+Embeddings
+   ↓
+Vector Search
+   ↓
+Relevant Context
+   ↓
+LLM
+   ↓
+Answer
+```
+
+This allows the assistant to answer questions using information from the user's documents.
+
+---
+
+### 🔎 Web Search
+
+When a question requires external or current information, IntelliMind AI can use a web-search tool instead of relying only on the LLM's internal knowledge.
+
+Example:
+
+```text
+User:
+What are the latest developments in artificial intelligence?
+
+        ↓
+
+AI decides that external information is required
+
+        ↓
+
+Web Search Tool
+
+        ↓
+
+Search Results
+
+        ↓
+
+LLM
+
+        ↓
+
+Answer
+```
+
+---
+
+### 🧮 Calculator Tool
+
+The assistant can use a calculator tool for mathematical operations.
+
+Example:
+
+```text
+User:
+What is 125 * 48 + 250?
+
+        ↓
+
+Calculator Tool
+
+        ↓
+
+6250
+```
+
+Using a dedicated calculation tool helps avoid relying on the LLM for arithmetic.
+
+---
+
+### 📈 Stock Price Tool
+
+IntelliMind AI can retrieve current stock-price information through a stock-price tool.
+
+Example:
+
+```text
+User:
+What is the current stock price of Apple?
+
+        ↓
+
+Stock Price Tool
+
+        ↓
+
+Current Market Data
+
+        ↓
+
+AI Response
+```
+
+This demonstrates how an AI assistant can connect an LLM with external real-time data sources.
+
+---
+
+### 🧠 Intelligent Tool Selection
+
+One of the main ideas behind IntelliMind AI is allowing the LLM to decide **which tool should be used for a particular query**.
+
+```text
+                         User Query
+                              │
+                              ▼
+                         ┌─────────┐
+                         │   LLM   │
+                         └────┬────┘
+                              │
+              ┌───────────────┼────────────────┐
+              │               │                │
+              ▼               ▼                ▼
+         Document          Web Search      Calculator
+         Retrieval                            │
+              │               │                │
+              └───────────────┼────────────────┘
+                              ▼
+                         Tool Result
+                              │
+                              ▼
+                         ┌─────────┐
+                         │   LLM   │
+                         └────┬────┘
+                              │
+                              ▼
+                           Answer
+```
+
+The assistant does not need to use the same workflow for every question.
+
+---
+
+### 🧵 Stateful Conversations
+
+IntelliMind AI maintains conversation state so that users can ask follow-up questions.
+
+For example:
+
+```text
+User:
+What is Retrieval-Augmented Generation?
+
+AI:
+RAG is...
+
+User:
+Why is it useful?
+
+AI:
+It is useful because...
+```
+
+The second question can be interpreted using the previous conversation context.
 
 ---
 
 # 🏗️ System Architecture
 
 ```text
-                    ┌─────────────────────┐
-                    │    Research Paper   │
-                    │        PDF          │
-                    └──────────┬──────────┘
-                               │
-                               ▼
-                    ┌─────────────────────┐
-                    │    PDF Processing   │
-                    │      PyMuPDF        │
-                    └──────────┬──────────┘
-                               │
-                               ▼
-                    ┌─────────────────────┐
-                    │   Text Extraction   │
-                    │    & Chunking       │
-                    └──────────┬──────────┘
-                               │
-                               ▼
-                    ┌─────────────────────┐
-                    │     Embeddings      │
-                    │ Hugging Face Model  │
-                    └──────────┬──────────┘
-                               │
-                               ▼
-                    ┌─────────────────────┐
-                    │    FAISS Index      │
-                    │  Vector Database    │
-                    └──────────┬──────────┘
-                               │
-                       User Question
-                               │
-                               ▼
-                    ┌─────────────────────┐
-                    │ Semantic Retrieval  │
-                    │ Relevant Chunks     │
-                    └──────────┬──────────┘
-                               │
-                               ▼
-                    ┌─────────────────────┐
-                    │   Gemini LLM        │
-                    │ Context + Question  │
-                    └──────────┬──────────┘
-                               │
-                               ▼
-                    ┌─────────────────────┐
-                    │     Final Answer    │
-                    └─────────────────────┘
+                         ┌───────────────┐
+                         │     User      │
+                         └───────┬───────┘
+                                 │
+                                 ▼
+                      ┌────────────────────┐
+                      │   IntelliMind AI   │
+                      │   AI Assistant     │
+                      └─────────┬──────────┘
+                                │
+                                ▼
+                         ┌─────────────┐
+                         │     LLM     │
+                         └──────┬──────┘
+                                │
+                 ┌──────────────┼──────────────┐
+                 │              │              │
+                 ▼              ▼              ▼
+          ┌────────────┐ ┌────────────┐ ┌────────────┐
+          │    RAG     │ │ Web Search │ │ Calculator │
+          │   Tool     │ │    Tool    │ │    Tool    │
+          └─────┬──────┘ └──────┬─────┘ └────────────┘
+                │               │
+                ▼               ▼
+          ┌────────────┐  ┌────────────┐
+          │ Documents  │  │ Web Data   │
+          └────────────┘  └────────────┘
+
+                         ┌──────────────┐
+                         │ Stock Price  │
+                         │     Tool     │
+                         └──────────────┘
+
+                                │
+                                ▼
+                         ┌─────────────┐
+                         │ Tool Result │
+                         └──────┬──────┘
+                                │
+                                ▼
+                         ┌─────────────┐
+                         │     LLM     │
+                         └──────┬──────┘
+                                │
+                                ▼
+                           Final Answer
 ```
 
 ---
 
-# 🔄 RAG Pipeline
+# 🔄 How IntelliMind AI Works
 
-ResearchRAG follows a standard Retrieval-Augmented Generation pipeline.
+## Step 1 — User Query
 
-### 1. Document Ingestion
-
-A research paper in PDF format is provided to the system.
+The user sends a natural-language query.
 
 ```text
-Research Paper.pdf
-        ↓
-    PDF Loader
-```
-
-### 2. Text Extraction
-
-The PDF is processed using **PyMuPDF** to extract its textual content.
-
-```text
-PDF
- ↓
-Pages
- ↓
-Extracted Text
-```
-
-### 3. Text Chunking
-
-Large text is divided into smaller chunks.
-
-```text
-Research Paper
-      ↓
-Large Text
-      ↓
-Text Chunks
-      ↓
-Chunk 1
-Chunk 2
-Chunk 3
-...
-```
-
-Chunking makes it possible to retrieve only the relevant portions of a large document instead of passing the complete paper to the LLM.
-
-### 4. Embedding Generation
-
-Each chunk is converted into an embedding vector using a Hugging Face embedding model.
-
-```text
-Text Chunk
-    ↓
-Embedding Model
-    ↓
-Vector
-```
-
-### 5. Vector Storage
-
-The generated embeddings are stored in a **FAISS** index.
-
-```text
-Chunk → Embedding → FAISS
-```
-
-FAISS enables efficient similarity search over the document vectors.
-
-### 6. Query Processing
-
-When the user asks a question, the question is also converted into an embedding.
-
-```text
-User Question
-      ↓
-Embedding Model
-      ↓
-Query Vector
-```
-
-### 7. Retrieval
-
-FAISS compares the query vector with stored document vectors and retrieves the most relevant chunks.
-
-```text
-Query Vector
-      ↓
-FAISS Similarity Search
-      ↓
-Relevant Document Chunks
-```
-
-### 8. Generation
-
-The retrieved context and user question are passed to Gemini.
-
-```text
-Retrieved Context
-       +
-User Question
-       ↓
-   Gemini
-       ↓
-Generated Answer
+What is RAG and why is it useful?
 ```
 
 ---
 
-# 🛠️ Tech Stack
+## Step 2 — LLM Understands the Query
+
+The LLM analyzes the request and determines whether it can answer directly or needs an external tool.
+
+---
+
+## Step 3 — Tool Selection
+
+Depending on the query, the assistant can select an appropriate tool.
+
+| Query Type | Tool |
+|---|---|
+| General question | LLM |
+| Document question | RAG |
+| Current information | Web Search |
+| Mathematical calculation | Calculator |
+| Stock information | Stock Price |
+
+---
+
+## Step 4 — Tool Execution
+
+The selected tool is executed and produces an external result.
+
+For example:
+
+```text
+User Query
+    ↓
+LLM
+    ↓
+Stock Price Tool
+    ↓
+Market Data
+```
+
+---
+
+## Step 5 — Result Returned to LLM
+
+The tool output is provided back to the LLM.
+
+```text
+Tool Result
+     ↓
+     LLM
+```
+
+The LLM then uses the result to construct the final response.
+
+---
+
+## Step 6 — Final Response
+
+The assistant returns a natural-language answer to the user.
+
+```text
+User
+ ↓
+LLM
+ ↓
+Tool
+ ↓
+Tool Result
+ ↓
+LLM
+ ↓
+Final Answer
+```
+
+---
+
+# 📚 RAG Pipeline
+
+The document-question-answering component follows a Retrieval-Augmented Generation workflow.
+
+```text
+                DOCUMENT INGESTION
+
+                  PDF / Document
+                        │
+                        ▼
+                Text Extraction
+                        │
+                        ▼
+                   Chunking
+                        │
+                        ▼
+                   Embeddings
+                        │
+                        ▼
+                 Vector Storage
+                        │
+                        ▼
+                   Vector Search
+                        │
+                        │
+                  USER QUERY
+                        │
+                        ▼
+                    Retrieval
+                        │
+                        ▼
+                Relevant Context
+                        │
+                        ▼
+                       LLM
+                        │
+                        ▼
+                     Answer
+```
+
+The retrieved document content provides additional context to the LLM before generating the answer.
+
+---
+
+# 🧠 Technologies Used
 
 | Technology | Purpose |
 |---|---|
-| Python | Core programming language |
-| LangChain | RAG workflow and document processing |
-| PyMuPDF | PDF text and image extraction |
-| Hugging Face | Text embeddings |
-| FAISS | Vector similarity search |
-| Gemini | Large Language Model |
-| PIL | Image processing |
-| NumPy | Numerical/vector operations |
-| python-dotenv | Environment variable management |
+| Python | Core development |
+| LLM | Natural-language understanding and generation |
+| LangChain | LLM application and tool integration |
+| RAG | Document-based question answering |
+| Embeddings | Semantic representation of documents |
+| Vector Search | Relevant document retrieval |
+| Gemini API | AI model / language generation |
+| Web Search | External information retrieval |
+| Calculator Tool | Mathematical operations |
+| Stock Price Tool | Market information |
+| `.env` | API key management |
 
 ---
 
-# 📁 Project Structure
+# 📂 Project Structure
 
 ```text
-ResearchRAG/
+IntelliMind-AI/
+│
+├── app/
+│   ├── agents/
+│   ├── tools/
+│   ├── rag/
+│   └── ...
 │
 ├── data/
-│   ├── research.pdf
-│   └── second_research.pdf
+│   └── documents/
 │
-├── faiss_index/
-│   ├── index.faiss
-│   └── index.pkl
-│
-├── images/
-│   └── extracted_images/
+├── vectorstore/
 │
 ├── main.py
+│
 ├── requirements.txt
 ├── .env
 ├── .gitignore
 └── README.md
 ```
 
-> The exact filenames/folders may vary depending on the current version of the project.
+> Adjust the folder names above if your current repository structure differs.
 
 ---
 
@@ -253,13 +420,13 @@ ResearchRAG/
 ## 1. Clone the Repository
 
 ```bash
-git clone https://github.com/shrutipatil1925/ResearchRAG.git
+git clone https://github.com/shrutipatil1925/IntelliMind-AI.git
 ```
 
-Move into the project directory:
+Move into the project:
 
 ```bash
-cd ResearchRAG
+cd IntelliMind-AI
 ```
 
 ---
@@ -268,7 +435,7 @@ cd ResearchRAG
 
 ### Windows
 
-```bash
+```powershell
 python -m venv venv
 ```
 
@@ -295,19 +462,21 @@ pip install -r requirements.txt
 
 ---
 
-# 🔑 Environment Variables
+# 🔐 Environment Variables
 
-ResearchRAG uses the Gemini API for answer generation.
-
-Create a `.env` file in the project root:
+Create a `.env` file in the project root.
 
 ```env
 GOOGLE_API_KEY=your_gemini_api_key
 ```
 
-Do not commit your `.env` file to GitHub.
+If your current implementation uses additional API keys for external tools, add them according to the tool configuration.
 
-Your `.gitignore` should contain:
+### Important
+
+Never commit API keys to GitHub.
+
+Add the following to `.gitignore`:
 
 ```text
 .env
@@ -318,283 +487,227 @@ __pycache__/
 
 ---
 
-# ▶️ Running the Project
+# ▶️ Running the Application
 
-After activating the virtual environment and configuring the API key:
+After activating the virtual environment and configuring the required API keys:
 
 ```bash
 python main.py
 ```
 
-The application will start the ResearchRAG workflow and allow you to interact with the research documents.
+The application will start the IntelliMind AI assistant.
 
 ---
 
-# 💬 Example Interaction
+# 💡 Example Queries
 
-### User
-
-```text
-What is the main objective of this research paper?
-```
-
-### ResearchRAG
+### General AI
 
 ```text
-The main objective of the research is to ...
+Explain what an embedding is.
 ```
 
-The answer is generated using relevant information retrieved from the research paper.
+### Document RAG
+
+```text
+What is the main conclusion of this research paper?
+```
+
+### Web Search
+
+```text
+What are the latest developments in AI?
+```
+
+### Calculator
+
+```text
+Calculate 25% of 8400.
+```
+
+### Stock Information
+
+```text
+What is the current stock price of Apple?
+```
+
+### Follow-up Question
+
+```text
+User:
+What is RAG?
+
+AI:
+RAG combines retrieval with language generation...
+
+User:
+How does retrieval work?
+
+AI:
+Retrieval finds relevant information from...
+```
 
 ---
 
-# 🧪 Example Questions
+# 🔥 Why This Project Is Different From a Basic Chatbot
 
-You can ask questions such as:
-
-```text
-What is the main objective of the paper?
-
-What methodology does the paper use?
-
-What dataset was used?
-
-What are the main findings?
-
-What are the limitations of the proposed approach?
-
-What models were used in the research?
-
-Explain the methodology in simple terms.
-
-What are the future research directions?
-```
-
----
-
-# 📊 Why RAG?
-
-Large Language Models have a knowledge cutoff and may not have access to information contained in a user's private documents.
-
-RAG solves this problem by combining:
+A traditional chatbot:
 
 ```text
-Knowledge Retrieval
-        +
-Language Generation
-        =
-Grounded Question Answering
+User
+ ↓
+LLM
+ ↓
+Answer
 ```
 
-Instead of asking the LLM to answer from its general knowledge, ResearchRAG first retrieves relevant information from the research paper and then provides that information as context to the LLM.
-
-This helps the system answer questions based on the actual document.
-
----
-
-# 🧠 Key Concepts Demonstrated
-
-This project demonstrates practical implementation of several important AI/ML concepts:
-
-### Retrieval-Augmented Generation
-
-Combines information retrieval with LLM-based generation.
-
-### Embeddings
-
-Represents text as numerical vectors that capture semantic meaning.
-
-### Vector Search
-
-Finds documents or text chunks that are semantically similar to a query.
-
-### FAISS
-
-Provides efficient similarity search over high-dimensional vectors.
-
-### Semantic Search
-
-Retrieves information based on meaning rather than exact keyword matching.
-
-### Prompt-Based Generation
-
-Uses retrieved document context to guide Gemini's response.
-
-### Multimodal Document Processing
-
-Research papers can contain both textual and visual information, so the project also explores extracting images from PDF documents.
-
----
-
-# 📈 Project Workflow
+IntelliMind AI:
 
 ```text
-                 USER
-                  │
-                  ▼
-           Upload Research PDF
-                  │
-                  ▼
-          Extract PDF Content
-                  │
-          ┌───────┴────────┐
-          ▼                ▼
-        Text             Images
-          │
-          ▼
-       Chunking
-          │
-          ▼
-      Embeddings
-          │
-          ▼
-        FAISS
-          │
-          │
-       User Query
-          │
-          ▼
-       Embedding
-          │
-          ▼
-    Similarity Search
-          │
-          ▼
-  Relevant Text Chunks
-          │
-          ▼
-       Gemini
-          │
-          ▼
-       Answer
+                         ┌── RAG
+                         │
+User → LLM → Tool ───────┼── Web Search
+                         │
+                         ├── Calculator
+                         │
+                         └── Stock Price
+                              ↓
+                         Tool Result
+                              ↓
+                             LLM
+                              ↓
+                           Answer
 ```
+
+The assistant can therefore interact with **external tools and knowledge sources** instead of depending only on the model's internal knowledge.
 
 ---
 
 # 🎯 Use Cases
 
-ResearchRAG can be useful for:
+IntelliMind AI can be used as a foundation for:
 
-- 📚 Research paper analysis
-- 🔬 Literature review assistance
-- 🎓 Academic learning
-- 📄 Document question answering
-- 🧑‍🔬 Research exploration
-- 🔎 Semantic search across research documents
-- 📝 Understanding complex research papers
+- 📚 Document research
+- 🔎 Information retrieval
+- 📄 Research paper Q&A
+- 🧮 Mathematical assistance
+- 📈 Financial information lookup
+- 🌐 Current-information search
+- 🤖 General AI assistance
+- 🧠 Tool-using AI agents
 
 ---
 
-# ⚠️ Limitations
+# 🧪 Key AI Concepts Demonstrated
 
-The current implementation has some limitations:
+This project provides practical experience with:
 
-- Answers depend on the quality of the retrieved document chunks.
-- OCR may be required for scanned/image-only PDFs.
-- Complex tables may not always be represented correctly through text extraction.
-- The quality of generated answers depends on the underlying LLM.
-- Very large document collections require more scalable indexing and storage.
-- Extracted images require additional multimodal processing to fully understand their content.
+### 1. Large Language Models
+
+Using an LLM to understand user queries and generate natural-language responses.
+
+### 2. Retrieval-Augmented Generation
+
+Connecting an LLM to external document knowledge.
+
+### 3. Tool Calling
+
+Allowing an LLM to select and invoke external tools.
+
+### 4. Semantic Search
+
+Finding relevant information based on semantic similarity.
+
+### 5. Conversation State
+
+Maintaining context across multiple messages.
+
+### 6. Agentic Workflows
+
+Moving beyond a fixed chatbot pipeline toward an assistant capable of selecting different tools based on the user's request.
 
 ---
 
 # 🔮 Future Improvements
 
-Possible improvements include:
+Possible improvements for IntelliMind AI include:
 
-### 1. Multimodal RAG
+## Multi-Agent Architecture
 
-Improve understanding of:
-
-- Research figures
-- Charts
-- Tables
-- Diagrams
-- Images
-
-### 2. Better Retrieval
-
-Experiment with:
-
-- Hybrid search
-- BM25 + vector search
-- Re-ranking
-- Metadata filtering
-- Query expansion
-
-### 3. Advanced RAG
-
-Implement advanced techniques such as:
+Separate specialized agents could handle different tasks:
 
 ```text
-Basic RAG
-   ↓
-Advanced Retrieval
-   ↓
-Re-ranking
-   ↓
-CRAG / Self-RAG
-   ↓
-Agentic RAG
+                 IntelliMind
+                     │
+       ┌─────────────┼─────────────┐
+       ▼             ▼             ▼
+  Research Agent  Data Agent   Web Agent
+       │             │             │
+       ▼             ▼             ▼
+     RAG          SQL/Data       Search
 ```
-
-### 4. Web Interface
-
-Build a user-friendly interface using:
-
-- Django
-- Flask
-- FastAPI
-- Streamlit
-
-### 5. Research Paper Comparison
-
-Allow users to upload multiple papers and ask:
-
-```text
-Compare the methodologies used in these papers.
-
-Which datasets are common?
-
-How do their approaches differ?
-
-What are the limitations of each paper?
-```
-
-### 6. Citation Support
-
-Return the source paper, page number, and retrieved passage along with the answer.
-
-### 7. Evaluation
-
-Add RAG evaluation metrics for:
-
-- Retrieval accuracy
-- Context relevance
-- Answer faithfulness
-- Answer correctness
 
 ---
 
-# 📌 What I Learned From This Project
+## Advanced RAG
 
-Building ResearchRAG provided practical experience with:
+Improve document retrieval using:
 
-- Document processing
-- PDF parsing
-- Text chunking
-- Embedding models
+- Hybrid Search
+- Re-ranking
+- Metadata filtering
+- Query rewriting
+- CRAG
+- Self-RAG
+
+---
+
+## Long-Term Memory
+
+Add persistent user memory so the assistant can retain useful information across sessions.
+
+---
+
+## More Tools
+
+Additional tools could include:
+
+- SQL database querying
+- Email integration
+- Calendar integration
+- Code execution
+- File analysis
+- Data visualization
+
+---
+
+## Web Interface
+
+The current assistant can be extended into a full web application using:
+
+- Django
+- FastAPI
+- React
+
+---
+
+# 📈 Learning Outcomes
+
+Through IntelliMind AI, the project demonstrates practical experience with:
+
+- Python
+- LLM application development
+- RAG
+- Embeddings
 - Vector databases
-- Semantic search
-- Retrieval-Augmented Generation
 - LangChain
 - Gemini API
-- FAISS
-- Multimodal document processing
-- Environment variable management
-- Debugging AI application pipelines
-
-The project demonstrates how an LLM can be connected to an external knowledge source instead of relying only on its pretrained knowledge.
+- Tool calling
+- Agentic AI concepts
+- Conversation state
+- API integration
+- Document processing
+- Debugging AI workflows
 
 ---
 
@@ -609,9 +722,9 @@ https://github.com/shrutipatil1925
 
 ---
 
-# ⭐ If You Find This Project Useful
+# ⭐ Support
 
-If you find ResearchRAG useful or interesting, consider giving the repository a ⭐ on GitHub.
+If you find this project useful or interesting, consider giving the repository a ⭐ on GitHub.
 
 ---
 
